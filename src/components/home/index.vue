@@ -11,7 +11,7 @@
                     <h2>黑马后台管理系统</h2>
                 </el-col>
                 <el-col :span="2">
-                    <a href="#">退出</a>
+                    <a href="#" @click.prevent="handleSignOut()">退出</a>
                 </el-col>
             </el-row>
         </el-header>
@@ -82,6 +82,24 @@
         </el-container>
     </el-container>
 </template>
+<script>
+export default {
+    name:'home',
+    beforeCreate(){
+        const token = localStorage.getItem('token')
+        if (!token) {
+            this.$router.push({name:'login'})
+        }
+    },
+    methods:{
+        handleSignOut(){
+            localStorage.clear();
+            this.$message.success('退出成功')
+            this.$router.push({name: 'login'})
+        }
+    }
+}
+</script>
 <style lang="scss" scoped>
 .container{
     height: 100%;
@@ -108,14 +126,3 @@
     }
 }
 </style>
-<script>
-export default {
-    name:'home',
-    beforeCreate(){
-        const token = localStorage.getItem('token')
-        if (!token) {
-            this.$router.push({name:'login'})
-        }
-    }
-}
-</script>
