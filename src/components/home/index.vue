@@ -11,7 +11,7 @@
                     <h2>黑马后台管理系统</h2>
                 </el-col>
                 <el-col :span="2">
-                    <a href="#" @click.prevent="handleSignOut()">退出</a>
+                    <a href="#" @click.prevent="handleSignOut()"><el-button type="primary">退出</el-button></a>
                 </el-col>
             </el-row>
         </el-header>
@@ -118,14 +118,10 @@ export default {
     .aside{
         background-color: #D3DCE6;
         color: #333;
-        text-align: center;
-        line-height: 200px;
     }
     .main{
         background-color: #E9EEF3;
         color: #333;
-        text-align: center;
-        line-height: 160px;
     }
 }
 </style>
