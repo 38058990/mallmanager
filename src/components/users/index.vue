@@ -36,13 +36,14 @@
             v-model="tableData.row.mg_state"
             active-color="#13ce66"
             inactive-color="#ff4949"
+            @change="changeMgState(tableData.row)"
           ></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="address" label="操作">
         <template slot-scope="tableData">
-          <el-button type="primary" icon="el-icon-edit" circle plain="plain" @click="handleUserEdit()"></el-button>
-          <el-button type="success" icon="el-icon-check" circle plain="plain"></el-button>
+          <el-button type="primary" icon="el-icon-edit" circle plain="plain" @click="handleUserEdit(tableData.row)"></el-button>
+          <el-button type="success" icon="el-icon-check" circle plain="plain" @click="handleUserRol(tableData.row)"></el-button>
           <el-button type="danger" icon="el-icon-delete" circle plain="plain" @click="handleUserDel(tableData.row.id)"></el-button>
         </template>
       </el-table-column>
@@ -66,7 +67,7 @@
           <el-input v-model="form.password" autocomplete="off" type="password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.emil" autocomplete="off"></el-input>
+          <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
@@ -82,10 +83,10 @@
     <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit" :width="diaLogWidth">
       <el-form :model="form">
         <el-form-item label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+          <el-input v-model="form.username" autocomplete="off" disabled></el-input>
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
-          <el-input v-model="form.emil" autocomplete="off"></el-input>
+          <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="电话" :label-width="formLabelWidth">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
@@ -93,7 +94,25 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
-        <el-button type="primary" @click="addUser()">确 定</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 分配权限 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRol" width="30%">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          {{ currUserName }}
+        </el-form-item>
+        <el-form-item label="活动区域" label-width="100px">
+          <el-select v-model="currRoleId">
+            <el-option :label="item.roleName" :value="item.id" v-for="(item,i) in roles" :key="i"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
+        <el-button type="primary" @click="setRole">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -110,6 +129,7 @@ export default {
       plain:true,
       dialogFormVisible: false,
       dialogFormVisibleEdit: false,
+      dialogFormVisibleRol: false,
       formLabelWidth:"100px",
       diaLogWidth: '30%',
       form:{
@@ -117,7 +137,12 @@ export default {
         password: '',
         email: '',
         mobile: ''
-      }
+      },
+      //分配角色
+      currRoleId:34,
+      currUserName: '',
+      currUserId: '',
+      roles:[]
     };
   },
   created() {
@@ -198,8 +223,42 @@ export default {
           });          
         });
     },
-    handleUserEdit(){
+    handleUserEdit(user){
+      this.form = user
       this.dialogFormVisibleEdit = true
+    },
+    async editUser(){
+      const res = await this.$http.put(`users/${this.form.id}`,this.form)
+      this.form = {}
+      this.dialogFormVisibleEdit = false
+      this.getUserList()
+    },
+    async changeMgState(user){
+      //users/:uId/state/:type
+      const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
+      console.log(res);
+      
+      this.getUserList()
+    },
+    async handleUserRol(user){
+      this.currUserName = user.username
+      this.dialogFormVisibleRol = true
+      this.currUserId = user.id
+      const res = await this.$http.get(`roles`)
+      console.log(res);
+      
+      this.roles = res.data.data
+      const res1 = await this.$http.get(`users/530`)
+      //此处权限问题，无法将uid赋值给currRoleId
+      //this.currRoleId = res1.data.data.rid
+    },
+    async setRole(){
+      const res = await this.$http.put(`users/${this.currRoleId}/role`,{
+        rid: this.currRoleId
+      })
+      console.log(res);
+      
+      this.dialogFormVisibleRol = false
     }
   }
 };
