@@ -1,11 +1,6 @@
 <template>
   <el-card class="box-card">
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item>首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
-
+    <my-bread level1="用户管理" level2="用户列表"></my-bread>
     <el-row>
       <el-col>
         <el-input placeholder="请输入内容" class="input-with-select" v-model="query" clearable @clear="clearUser()">
@@ -106,21 +101,24 @@
         </el-form-item>
         <el-form-item label="活动区域" label-width="100px">
           <el-select v-model="currRoleId">
+            <el-option label="请选择" :value="-1" disabled></el-option>
             <el-option :label="item.roleName" :value="item.id" v-for="(item,i) in roles" :key="i"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
-        <el-button type="primary" @click="setRole">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
 </template>
 <script>
 export default {
+  name: 'users',
   data() {
     return {
+      curActive:"users",
       tableData: [],
       query: "",
       pagenum: 1,
@@ -139,7 +137,7 @@ export default {
         mobile: ''
       },
       //分配角色
-      currRoleId:34,
+      currRoleId:'',
       currUserName: '',
       currUserId: '',
       roles:[]
@@ -151,9 +149,9 @@ export default {
   methods: {
     async getUserList() {
       //获取token
-      const AUTH_TOKEN = localStorage.getItem("token");
+      // const AUTH_TOKEN = localStorage.getItem("token");
       //使用axios文档中的携带请求头key和token value发送请求
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      // this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
@@ -206,7 +204,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(async() => {
-          const res = await this.$http.delete(`users/${userDelId}`)
+          const res = await this.$http.delete(`users/${userDelId}`)          
           const {meta:{msg,status}} = res.data
           if (status === 200) {
             this.pagenum = 1
@@ -231,33 +229,26 @@ export default {
       const res = await this.$http.put(`users/${this.form.id}`,this.form)
       this.form = {}
       this.dialogFormVisibleEdit = false
-      this.getUserList()
     },
     async changeMgState(user){
-      //users/:uId/state/:type
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
-      console.log(res);
       
-      this.getUserList()
-    },
+    },//分配角色
     async handleUserRol(user){
       this.currUserName = user.username
       this.dialogFormVisibleRol = true
       this.currUserId = user.id
       const res = await this.$http.get(`roles`)
-      console.log(res);
       
       this.roles = res.data.data
-      const res1 = await this.$http.get(`users/530`)
-      //此处权限问题，无法将uid赋值给currRoleId
-      //this.currRoleId = res1.data.data.rid
+      const res1 = await this.$http.get(`users/${user.id}`)
+      this.currRoleId = res1.data.data.rid
     },
     async setRole(){
-      const res = await this.$http.put(`users/${this.currRoleId}/role`,{
+      const res = await this.$http.put(`users/${this.currUserId}/role`,{
         rid: this.currRoleId
       })
-      console.log(res);
-      
+      this.currRoleId = ''
       this.dialogFormVisibleRol = false
     }
   }
@@ -265,7 +256,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .box-card {
-  height: 100%;
+  height: 99%;
   .el-input {
     width: 300px;
   }

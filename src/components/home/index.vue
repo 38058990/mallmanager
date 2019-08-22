@@ -23,6 +23,7 @@
                     background-color="#545c64"
                     text-color="#fff"
                     active-text-color="#ffd04b"
+                    :default-active="activerouter"
                     :unique-opened="true"
                     :router="true">
                     <el-submenu index="1">
@@ -40,11 +41,11 @@
                             <i class="el-icon-location"></i>
                             <span>权限管理</span>
                         </template>
-                        <el-menu-item index="1-1">
-                            <span>导航2</span>
+                        <el-menu-item index="role">
+                            <span>权限管理</span>
                         </el-menu-item>
-                        <el-menu-item index="1-2">
-                            <span>导航1-2</span>
+                        <el-menu-item index="right">
+                            <span>权限列表</span>
                         </el-menu-item>
                     </el-submenu>
 
@@ -88,6 +89,11 @@
 <script>
 export default {
     name:'home',
+    data(){
+        return{
+            activerouter:'users'
+        }
+    },
     beforeCreate(){
         const token = localStorage.getItem('token')
         if (!token) {
@@ -99,7 +105,12 @@ export default {
             localStorage.clear();
             this.$message.success('退出成功')
             this.$router.push({name: 'login'})
-        }
+        },
+    },
+    mounted(){
+        let currentUrl = window.location.href
+        this.activerouter = currentUrl.split('/#/')[1];
+        
     }
 }
 </script>
