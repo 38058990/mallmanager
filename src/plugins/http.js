@@ -11,7 +11,7 @@ MyHttpServer.install = (Vue) => {
        
         if (config.url !== 'login') {
             //获取token   统一设置拦截器，除了登录都会设置请求头
-            const AUTH_TOKEN = localStorage.getItem("token");
+            const AUTH_TOKEN = sessionStorage.getItem("token");
             //使用axios文档中的携带请求头key和token value发送请求
             config.headers["Authorization"] = AUTH_TOKEN;
         }

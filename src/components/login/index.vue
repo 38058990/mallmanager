@@ -44,7 +44,7 @@ export default {
             const {data, meta:{msg,status}} = res.data;
             if (status === 200){
                 this.$message.success(msg);
-                localStorage.setItem('token',data.token)
+                sessionStorage.setItem('token',data.token)
                 this.$router.push({name:'home'})
             } else{
                 this.$message.warning(msg)

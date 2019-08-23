@@ -178,6 +178,7 @@ export default {
       this.getUserList()
     },
     searchUser(){
+      this.pagenum = 1
       this.getUserList()
     },
     clearUser(){
@@ -199,7 +200,7 @@ export default {
       }
     },
     handleUserDel(userDelId){
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
