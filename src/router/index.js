@@ -5,6 +5,10 @@ import Home from '@/components/home/'
 import Users from '@/components/users'
 import Right from '@/components/rights/right/'
 import Role from '@/components/rights/role/'
+import goodsList from '@/components/goods/goodslist/'
+import goodsAdd from '@/components/goods/goodsadd/'
+import Cateparams from '@/components/goods/goodscate/'
+import Categories from '@/components/goods/categories/'
 import { homedir } from 'os'
 import { MessageBox, Message } from 'element-ui'
 
@@ -32,6 +36,22 @@ const router =  new Router({
         path: '/roles',
         name: 'roles',
         component: Role
+      },{
+        path: '/goods',
+        name: 'goods',
+        component: goodsList
+      },{
+        path: '/goodsadd',
+        name: 'goodsadd',
+        component: goodsAdd
+      },{
+        path: '/params',
+        name: 'params',
+        component: Cateparams
+      },{
+        path: '/categories',
+        name: 'categories',
+        component: Categories
       }]
     }
   ]
@@ -51,10 +71,11 @@ router.beforeEach((to, from, next) => {
   }else{
     const token = sessionStorage.getItem("token");
     if (!token) {
-      Message.warning('请先登录')
-      router.push({ name: "login" })
-
-      return
+      if (to.path !== '/login') {
+        Message.warning('请先登录')
+        router.push({ name: "login" })
+        return
+      }
     }
   }
   

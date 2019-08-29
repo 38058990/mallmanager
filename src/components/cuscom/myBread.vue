@@ -1,5 +1,5 @@
 <template>
-  <el-breadcrumb separator="/">
+  <el-breadcrumb separator=">">
     <el-breadcrumb-item>首页</el-breadcrumb-item>
     <el-breadcrumb-item>{{ level1 }}</el-breadcrumb-item>
     <el-breadcrumb-item>{{ level2 }}</el-breadcrumb-item>

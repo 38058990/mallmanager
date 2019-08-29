@@ -18,7 +18,7 @@
       </el-row>
     </el-header>
     <el-container>
-      <el-aside width="202px" class="aside">
+      <el-aside width="200px" class="aside">
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -97,6 +97,12 @@ export default {
   .main {
     background-color: #e9eef3;
     color: #333;
+  }
+}
+.container .el-aside{
+  background-color:rgb(84, 92, 100);
+  .el-submenu{
+    width: 200px;
   }
 }
 </style>

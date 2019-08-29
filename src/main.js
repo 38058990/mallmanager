@@ -28,7 +28,7 @@ Vue.component(myBread.name,myBread)
 Vue.config.productionTip = false
 
 Vue.filter('fmtdate',(v) => {
-  return moment(v).format('YYYY-MM-DD')
+  return moment(v).format('YYYY-MM-DD HH:mm')
 })
 
 /* eslint-disable no-new */

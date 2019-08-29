@@ -3,7 +3,7 @@ import axios from 'axios'
 const MyHttpServer = {}
 
 MyHttpServer.install = (Vue) => {
-    axios.defaults.baseURL = 'http://3.112.132.86:8878/api/private/v1/'
+    axios.defaults.baseURL = 'http://www.xiaomadagege.cn:8888/api/private/v1/'
 
     
     // 添加请求拦截器
